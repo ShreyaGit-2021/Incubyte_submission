@@ -1,0 +1,127 @@
+#include <iostream>
+#include <unordered_map>
+
+class Spacecraft
+{
+private:
+    int x, y, z;
+    char direction;
+
+    // Define a map for command actions
+    std::unordered_map<char, void (Spacecraft::*)()> actions;
+
+public:
+    Spacecraft() : x(0), y(0), z(0), direction('N')
+    {
+        // Initialize the command-action map
+        actions['f'] = &Spacecraft::moveForward;
+        actions['b'] = &Spacecraft::moveBackward;
+        actions['l'] = &Spacecraft::turnLeft;
+        actions['r'] = &Spacecraft::turnRight;
+        actions['u'] = &Spacecraft::turnUp;
+        actions['d'] = &Spacecraft::turnDown;
+    }
+
+    void moveForward()
+    {
+        if (direction == 'N')
+            y++;
+        else if (direction == 'S')
+            y--;
+        else if (direction == 'E')
+            x++;
+        else if (direction == 'W')
+            x--;
+        else if (direction == 'U')
+            z++;
+        else if (direction == 'D')
+            z--;
+    }
+
+    void moveBackward()
+    {
+        if (direction == 'N')
+            y--;
+        else if (direction == 'S')
+            y++;
+        else if (direction == 'E')
+            x--;
+        else if (direction == 'W')
+            x++;
+        else if (direction == 'U')
+            z--;
+        else if (direction == 'D')
+            z++;
+    }
+
+    void turnLeft()
+    {
+        if (direction == 'N')
+            direction = 'W';
+        else if (direction == 'S')
+            direction = 'E';
+        else if (direction == 'E')
+            direction = 'N';
+        else if (direction == 'W')
+            direction = 'S';
+        else if (direction == 'U')
+            direction = 'N';
+        else if (direction == 'D')
+            direction = 'S';
+    }
+
+    void turnRight()
+    {
+        if (direction == 'N')
+            direction = 'E';
+        else if (direction == 'S')
+            direction = 'W';
+        else if (direction == 'E')
+            direction = 'S';
+        else if (direction == 'W')
+            direction = 'N';
+        else if (direction == 'U')
+            direction = 'S';
+        else if (direction == 'D')
+            direction = 'N';
+    }
+
+    void turnUp()
+    {
+        if (direction != 'D')
+            direction = 'U';
+    }
+
+    void turnDown()
+    {
+        if (direction != 'U')
+            direction = 'D';
+    }
+
+    void executeCommands(const std::string &commands)
+    {
+        for (char command : commands)
+        {
+            if (actions.find(command) != actions.end())
+            {
+                (this->*actions[command])();
+            }
+        }
+    }
+
+    void getPosition()
+    {
+        std::cout << "Current position: (" << x << ", " << y << ", " << z << "), Direction: " << direction << std::endl;
+    }
+};
+
+int main()
+{
+    Spacecraft chandrayaan3;
+    std::string commandSequence = "frubl";
+
+    chandrayaan3.executeCommands(commandSequence);
+    chandrayaan3.getPosition();
+
+    return 0;
+}
